@@ -1,8 +1,12 @@
 {
-  "name": "@ws-framework/core",
+  "name": "@iOSRajaramMohanty/ws-framework-core",
   "version": "0.1.0",
   "description": "Modular WebSocket server core built on ws",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iOSRajaramMohanty/ws-framework.git"
