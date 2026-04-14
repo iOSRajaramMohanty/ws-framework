@@ -1,0 +1,52 @@
+{
+  "name": "@ws-framework/redis-adapter",
+  "version": "0.1.0",
+  "description": "Redis pub/sub adapter for @ws-framework/core broadcast scaling",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iOSRajaramMohanty/ws-framework.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iOSRajaramMohanty/ws-framework/issues"
+  },
+  "homepage": "https://github.com/iOSRajaramMohanty/ws-framework#readme",
+  "keywords": [
+    "websocket",
+    "ws",
+    "redis",
+    "pubsub",
+    "adapter",
+    "typescript"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@ws-framework/core": "0.1.0",
+    "redis": "^5.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}
+

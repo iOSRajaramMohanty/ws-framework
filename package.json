@@ -1,0 +1,22 @@
+{
+  "name": "ws-framework",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @ws-framework/core",
+    "clean": "npm run clean -w @ws-framework/core",
+    "quickstart": "npm run build -w @ws-framework/core && node examples/quickstart/server.mjs",
+    "example:basic": "npm run build -w @ws-framework/core && tsx examples/basic-server/index.ts",
+    "example:chat": "npm run build -w @ws-framework/core && node examples/chat/server.mjs",
+    "ws:run-tests": "node scripts/ws-run-tests.mjs"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.3"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "@ws-framework/core",
+  "version": "0.1.0",
+  "description": "Modular WebSocket server core built on ws",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iOSRajaramMohanty/ws-framework.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iOSRajaramMohanty/ws-framework/issues"
+  },
+  "homepage": "https://github.com/iOSRajaramMohanty/ws-framework#readme",
+  "keywords": [
+    "websocket",
+    "ws",
+    "typescript",
+    "realtime",
+    "pubsub",
+    "plugin"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "jose": "^6.1.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.0"
+  }
+}

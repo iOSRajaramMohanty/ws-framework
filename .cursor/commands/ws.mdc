@@ -1,0 +1,496 @@
+# =========================
+# CORE SYSTEM
+# =========================
+
+# Command: ws-create-core
+
+You are a senior Node.js architect.
+
+Build a production-ready WebSocket server class using the `ws` library.
+
+Requirements:
+- Class name: WsServer
+- Use TypeScript
+- Maintain Map<string, Client>
+- Each client has:
+  - id (uuid)
+  - socket instance
+- Handle lifecycle:
+  - connection
+  - message
+  - disconnect
+- Incoming message format:
+  { "event": string, "data": any }
+
+Expose methods:
+- on(event, handler)
+- emit(event, client, data)
+- broadcast(event, data)
+
+Constraints:
+- Clean modular code
+- Extensible architecture
+- No hardcoding logic
+- Proper error handling
+
+Return full implementation.
+
+
+# Command: ws-add-plugin-system
+
+Enhance the existing WsServer class.
+
+Add a plugin system:
+- Plugin signature: (server: WsServer) => void
+- Add method:
+  server.use(plugin)
+
+Requirements:
+- Plugins can register events
+- Plugins can extend functionality
+- No modification to core logic
+
+Ensure clean architecture and scalability.
+
+
+# Command: ws-add-middleware
+
+Enhance WsServer with middleware support.
+
+Requirements:
+- Middleware signature:
+  (client, data, next) => void
+- Add:
+  server.useMiddleware(fn)
+- Middleware runs before event handlers
+- Support async middleware
+- Use chaining like Express.js
+
+Update emit() to execute middleware pipeline.
+
+Ensure:
+- Error-safe execution
+- Clean flow control.
+
+
+# Command: ws-add-config-system
+
+Add environment-based configuration support.
+
+Requirements:
+- Use dotenv
+- Create config module:
+  src/config/index.ts
+- Expose:
+  - port
+  - redisUrl
+- Replace hardcoded values
+- Validate required env variables
+
+Ensure:
+- Clean structure
+- Easy to extend
+
+# =========================
+# FEATURES
+# =========================
+
+# Command: ws-add-rooms
+
+Add room-based messaging system.
+
+Requirements:
+- client.join(room)
+- client.leave(room)
+- server.to(room).emit(event, data)
+
+Implementation:
+- Map<room, Set<clientId>>
+- Efficient broadcast to room
+- Auto cleanup on disconnect
+
+Ensure:
+- High performance
+- Scalable structure.
+
+
+# Command: ws-add-private-messaging
+
+Add targeted peer-to-peer messaging without changing core transport.
+
+Requirements:
+- `WsServer.emitTo(targetClientId, event, data): boolean` — send to one connected client by id; return whether the id was online.
+- Extend `WsPluginContext` with the same `emitTo` for plugins.
+- Ship `createPrivateMessagingPlugin(options?)` that listens on a configurable inbound event (default `private_send`) with payload `{ to: string, event: string, data?: unknown }`, validates, optionally rejects self-DM, and uses `emitTo` to deliver; optional `private_error` to the sender for invalid payload, self-send, or offline peer.
+- Types: `PrivateSendPayload`, `PrivateErrorPayload`, `PrivateMessagingPluginOptions` under `types/messaging/`.
+- Export from `@ws-framework/core` and document in README.
+
+Keep implementation in a dedicated module (e.g. `messaging/private-messaging-plugin.ts`), no core handler table hacks.
+
+
+# Command: ws-add-auth
+
+Create authentication middleware.
+
+Requirements:
+- JWT-based authentication
+- Extract token from:
+  - query params OR headers
+- Verify token
+- Attach user object to client
+
+If invalid:
+- Reject connection OR block messages
+
+Keep it modular and pluggable.
+
+
+# Command: ws-add-rate-limit
+
+Implement rate limiting middleware.
+
+Requirements:
+- Limit messages per client per second
+- Configurable limits
+- In-memory implementation
+- Extendable for Redis later
+
+If exceeded:
+- Drop message OR send warning
+
+Keep performance optimized.
+
+
+# =========================
+# SCALING
+# =========================
+
+# Command: ws-add-redis-adapter
+
+Design a Redis adapter for horizontal scaling.
+
+Requirements:
+- Use Redis pub/sub
+- Sync events across multiple WS servers
+
+Behavior:
+- server.broadcast() publishes to Redis
+- All instances receive and emit locally
+
+Architecture:
+- Adapter pattern
+- server.use(redisAdapter(config))
+
+Ensure:
+- No duplicate messages
+- Clean separation from core
+
+
+# =========================
+# PRODUCTION
+# =========================
+
+# Command: ws-add-logger
+
+Replace console logs with a logging system.
+
+Requirements:
+- Create logger abstraction
+- Support levels:
+  - info
+  - warn
+  - error
+- Allow pluggable logger (e.g., Winston)
+
+Ensure:
+- No direct console.log in core
+
+
+# Command: ws-add-heartbeat
+
+Add heartbeat mechanism.
+
+Requirements:
+- Ping/pong system
+- Detect dead connections
+- Auto disconnect inactive clients
+
+Configurable interval.
+
+Ensure minimal performance overhead.
+
+
+# Command: ws-add-tests
+
+Add unit and integration tests.
+
+Requirements:
+- Test:
+  - connection lifecycle
+  - event handling
+  - middleware execution
+- Use Jest
+
+Ensure:
+- Clean test structure
+- High coverage
+
+
+# Command: ws-prepare-package
+
+Prepare package for npm publishing.
+
+Requirements:
+- Proper exports
+- Type definitions
+- Build setup (tsc)
+- Clean package.json
+
+Ensure:
+- Developer-friendly usage
+
+
+# =========================
+# ARCHITECTURE & QUALITY (🔥 MOST IMPORTANT)
+# =========================
+
+# Command: ws-refactor-architecture
+
+You are a senior backend architect.
+
+Refactor the current codebase to improve architecture and maintainability.
+
+Requirements:
+- Enforce clear separation of concerns:
+  - server (orchestration)
+  - transport (wire/inbound)
+  - plugins
+  - types
+  - utils
+- Remove duplicate or redundant logic
+- Simplify overly complex abstractions
+- Ensure modular and scalable design
+- Fix all imports after refactor
+
+Do NOT break existing functionality.
+
+
+# Command: ws-review-code
+
+You are a senior engineer doing a production code review.
+
+Analyze the current code and provide:
+
+1. Architecture issues
+2. Performance risks
+3. Scalability concerns
+4. Type safety problems
+5. Suggested improvements
+
+Be critical and realistic.
+
+
+# Command: ws-optimize-performance
+
+Optimize the WebSocket server for high concurrency.
+
+Requirements:
+- Reduce unnecessary allocations
+- Optimize event dispatching
+- Avoid blocking operations
+- Improve broadcast efficiency
+- Ensure scalability for 10k+ connections
+
+Do not break existing behavior.
+
+
+# Command: ws-improve-types
+
+Refactor TypeScript types for better safety.
+
+Requirements:
+- Avoid `any` and unsafe `unknown` usage
+- Introduce strong typing for events
+- Separate system events and client events
+- Improve developer experience with autocomplete
+
+Ensure backward compatibility.
+
+
+# Command: ws-improve-dx
+
+Improve developer experience of the framework.
+
+Requirements:
+- Simplify API usage
+- Improve naming consistency
+- Add helpful error messages
+- Ensure intuitive usage patterns
+- Reduce boilerplate
+
+Make it beginner-friendly without losing power.
+
+
+# Command: ws-add-debug-tools
+
+Add debugging capabilities.
+
+Requirements:
+- Debug logs for connection, message, errors
+- Toggle debug mode
+- Structured logging
+- Easy troubleshooting for developers
+
+Ensure minimal performance overhead.
+
+
+# Command: ws-production-hardening
+
+You are a senior backend engineer preparing a WebSocket framework for production.
+
+Analyze and upgrade the existing codebase to be safe, stable, and scalable under real-world traffic.
+
+Requirements:
+
+# 1. Transport Safety
+- Add payload size limits before parsing messages
+- Reject oversized payloads with proper close codes (1009)
+- Ensure safe JSON parsing (no crashes)
+
+# 2. Message Validation
+- Validate incoming event structure
+- Reject invalid events gracefully
+- Prevent reserved event misuse (connection, disconnect, etc.)
+
+# 3. Error Handling
+- Add global error boundaries
+- Ensure no unhandled exceptions crash the server
+- Improve logging with structured data
+
+# 4. Connection Safety
+- Prevent duplicate disconnect handling
+- Ensure proper cleanup of:
+  - clients
+  - timers
+  - listeners
+
+# 5. Plugin Safety
+- Ensure all plugins clean up resources
+- Validate plugin execution order
+- Prevent plugin crashes from affecting core
+
+# 6. Performance Optimization
+- Avoid unnecessary allocations
+- Ensure O(1) operations where possible
+- Optimize broadcast logic
+
+# 7. Configuration
+- Move hardcoded values to environment config
+- Add support for:
+  - MAX_PAYLOAD
+  - HEARTBEAT_INTERVAL
+  - RATE_LIMIT
+
+# 8. Logging
+- Replace console logs with structured logger
+- Add levels: info, warn, error, debug
+
+# 9. Security
+- Prevent event injection
+- Validate client input strictly
+- Ensure auth is always first middleware
+
+# 10. Output
+Return:
+- Updated code snippets
+- List of improvements made
+- Any remaining risks
+
+Do NOT break existing functionality.
+
+# Command: ws-verify-runtime
+
+You are a senior QA engineer.
+
+Validate the WebSocket framework runtime behavior.
+
+Test scenarios:
+
+1. Authentication
+- Reject invalid tokens
+- Accept valid tokens
+
+2. Rate limiting
+- Detect spam
+- Block excessive messages
+
+3. Heartbeat
+- Detect dead connections
+- Auto disconnect inactive clients
+
+4. Redis scaling
+- Broadcast across instances
+
+5. Invalid input
+- Handle malformed JSON
+- Prevent crashes
+
+6. Edge cases
+- Large payloads
+- Rapid connect/disconnect
+
+Output:
+- Test results
+- Issues found
+- Suggested fixes
+
+# Command: ws-add-namespaces
+
+Add namespace support to the WebSocket framework.
+
+Requirements:
+- Implement `server.of(namespaceName)` API
+- Each namespace should:
+  - Isolate event handling
+  - Prefix or separate events internally
+- Create a Namespace class/module
+- Maintain namespace registry in WsServer
+
+Features:
+- namespace.on(event, handler)
+- namespace.emit(event, client, data)
+- namespace.broadcast(event, data)
+
+Constraints:
+- Do NOT break existing event system
+- Ensure backward compatibility
+- Keep performance efficient
+- Avoid code duplication
+
+Architecture:
+- Use composition (not inheritance)
+- Namespace should internally reuse server event system
+
+Return:
+- Namespace implementation
+- Updated WsServer
+- Example usage
+
+# Command: ws-run-tests
+
+You are a QA engineer.
+
+Run runtime validation for the WebSocket framework.
+
+Steps:
+1. Execute test script: node examples/tests/runtime-test.js
+2. Validate:
+   - Auth rejection
+   - Auth success
+   - Rate limiting
+   - No crashes
+3. Report:
+   - PASS / FAIL
+   - Any anomalies
+
+Ensure system stability.
